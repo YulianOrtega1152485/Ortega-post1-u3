@@ -29,3 +29,25 @@ Laboratorio: Ensamblado y Ejecución Paso a Paso con DEBUG
    INT 20	    0012	0005	0003	01480	NZ	NC	PL
   Observaciones
    El valor final del registro AX es 0012 (18 en decimal), lo cual corresponde correctamente a la suma de los valores cargados. Las banderas indican que el resultado no es cero (NZ), no se produjo acarreo (NC) y el resultado es positivo (PL). El registro IP avanza de acuerdo con el tamaño de cada instrucción ejecutada.
+
+Checkpoint 2 — Programa con bucle LOOP
+   Código ensamblado
+    A 100
+    MOV AX,0000
+    MOV CX,0004
+    ADD AX,0002
+    LOOP 0106
+    INT 20
+   Tabla de traza del bucle
+    Iteración	Instrucción	AX	CX	IP	¿Salta?
+    1	ADD AX,0002	0002	0004	0109	-
+    1	LOOP 0106	0002	0003	0106	Sí
+    2	ADD AX,0002	0004	0003	0109	-
+    2	LOOP 0106	0004	0002	0106	Sí
+    3	ADD AX,0002	0006	0002	0109	-
+    3	LOOP 0106	0006	0001	0106	Sí
+    4	ADD AX,0002	0008	0001	0109	-
+    4	LOOP 0106	0008	0000	010B	No
+-	    INT 20	0008	0000	----	Fin
+   Observaciones
+   El registro CX actúa como contador del bucle. En cada ejecución de la instrucción LOOP, CX se decrementa automáticamente y se realiza el salto si su valor es distinto de cero. Cuando CX llega a cero, el salto no se ejecuta y el programa continúa con la instrucción INT 20. El valor final de AX es 0008, resultado de sumar 2 en cuatro iteraciones.
